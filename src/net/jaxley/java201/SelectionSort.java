@@ -1,10 +1,12 @@
 package net.jaxley.java201;
 
+import java.util.LinkedList;
+
 /**
  * Created by jaxley on 6/8/16.
  */
 public class SelectionSort {
-    // sort from smallest to largest
+    // sort from smallest to largest iteratively (done in class)
     public static int[] sort(int[] input) {
         // iterate over the left half of the array to find
         for (int n=0; n < input.length; n++) {
@@ -37,9 +39,5 @@ public class SelectionSort {
             System.out.print(anArray[i]);
         }
         System.out.println("");
-    }
-
-    private static int[] recursiveSort(int[] input) {
-
     }
 }
