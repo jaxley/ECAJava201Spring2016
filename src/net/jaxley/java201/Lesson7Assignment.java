@@ -1,4 +1,7 @@
-package com.skoohgoli.java201;
+package net.jaxley.java201;
+
+import com.skoohgoli.java201.MyLinkedList;
+import com.skoohgoli.java201.Node;
 
 public class Lesson7Assignment {
 
@@ -33,9 +36,42 @@ public class Lesson7Assignment {
         return null;
     }
 
-    //You may want to change the arguments for the method, if it makes things easier
+    // public interface that uses private recursive calls
     public int[] recursiveSort(int[] input) {
-        return null;
+        return recursiveSort(0, input);
+    }
+
+    //You may want to change the arguments for the method, if it makes things easier
+    private int[] recursiveSort(int startIdx, int[] input) {
+        int[] sorted = input;
+        if (input == null) {
+            return input;
+        }
+        int length = input.length;
+        // each execution of recursiveSort will process just the first character swap and then use recursion on the remaining unsorted array
+        // this effectively replaces the outer loop with recursive calls instead
+        // input = {1, 0, 3}
+        // first call:  swap 1 and 0. Then sort {1, 3}
+
+        int minIndex = startIdx;
+        //find the smallest number in the sub-array
+        for (int j = startIdx; j < length; j++) {
+            if (input[j] < input[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        //if the smallest number is not at input[startIdx], swap so that it is
+        if (minIndex != startIdx) {
+            int temp = input[startIdx];
+            input[startIdx] = input[minIndex];
+            input[minIndex] = temp;
+        }
+        // now, process the rest of the unsorted data, if we're not already at the end of the array
+        if (startIdx != length) {
+            sorted = recursiveSort(startIdx + 1, input);
+        }
+        return sorted;
     }
 
     private static boolean isSame(int[] expected, int[] result) {
