@@ -66,7 +66,95 @@ public class Lesson8Assignment {
     public int[] inPlaceMergeSort(int[] input) {
         //The public function should stay the same.
         // You can create inner recursive functions though
-        return null;
+
+        // recursively divide the array into chunks
+        // else, split array into chunks, and recursively sort each
+
+        // kick off the recursive sort
+        inPlaceMergeSort(input, 0, input.length - 1);
+
+        // input reference passed by value has allowed input to be changed in-place in recursive calls. Just return it.
+        return input;
+    }
+
+    // internal inPlaceMergeSort function that processes sub-sections of the input array
+    private void inPlaceMergeSort(int[] input, int start, int end) {
+
+        if (end-start+1 == 1) {
+            return;
+        }
+
+        // e.g. start = 0, length = 6 (end = 6)
+        // leftStart = 0; leftEnd = 6 / 2 + 0 = 3;
+        // rightStart = leftEnd + 1 = 4;
+        // rightEnd = start + length = 6;
+        // e.g.
+        // start = 4, length = 6 (end = 10)
+        // leftStart = 4 (start); leftEnd = 6 / 2 + 4 = 7
+        // rightStart = leftEnd + 1 = 8
+        // rightEnd = start + length = 10;
+        if (end-start+1 == 2) {
+            // two unsorted elements - sort each
+            if (input[end]<input[start]) {
+                swap(input, start, end);
+            }
+        } else {
+            // need to continue splitting before merging
+
+            int leftStart = start;
+            int leftEnd = (end - start) / 2 + start - 1;
+            int rightStart = leftEnd + 1;
+            int rightEnd = end;
+
+            // recursively split
+            inPlaceMergeSort(input, leftStart, leftEnd);
+            inPlaceMergeSort(input, rightStart, rightEnd);
+
+            doInPlaceMerge(input, leftStart, leftEnd, rightStart, rightEnd);
+        }
+    }
+    
+    // do an in-place merge directly in the input array.
+    private void doInPlaceMerge(int[] input, int leftStart, int leftEnd, int rightStart, int rightEnd) {
+        int leftPointer = leftStart;
+        int rightPointer = rightStart;
+
+        // step through left array and compare against the right array values but stop when you exhaust values in either array
+        // something is wrong with loop termination - leftPointer can exceed leftEnd before we deal with the rest of the right-hand-side
+        while (leftPointer <= leftEnd && rightPointer <= rightEnd) {
+
+            // if left value is < right value, store in result - check next right value
+            // split
+            // input = {98, 7654, 2, 3456, 66}
+            // left = {98, 7654}, right = {2, 3456, 66}
+            // left = {98} right = {7654}
+            // left = {2}, right = {3456, 66}
+            // merge
+            // {2}, {3456, 66} => {98, 7654, 2, 66, 3456}
+            // {98, 7654} => {98, 7654, 2, 66, 3456}
+            // {98, 7654}, {2, 66, 3456} => {2, 7654, 98, 66, 3456} => {2, 98, 7654, 66, 3456} => {} => {2, 66, 98, 3456, 7654}; 98/2 swap; 7654 / 98 swap;
+            // otherwise, store all right values that are less than the left value.  Then, increment left pointer and continue loop
+            if (input[leftPointer] < input[rightPointer]) {
+                // leave it in place and move on to next value
+                leftPointer++;
+                // check right value next time through this loop against the next left value
+            } else {
+                // store the right value (it is less) and then check the next right value against the current left value
+                // swap the values
+                swap(input, leftPointer, rightPointer);
+                // we didn't necessarily put the larger value in the proper place on the right. Since right was sorted, we need to make it sorted again
+                int n = rightPointer;
+                while (n++ < rightEnd && input[n] < input[rightPointer]) {
+                    swap(input, n, n-1);
+                }
+            }
+        }
+    }
+
+    private void swap(int[] input, int leftPosition, int rightPosition) {
+        int oldLeftValue = input[leftPosition];
+        input[leftPosition] = input[rightPosition];
+        input[rightPosition] = oldLeftValue;
     }
 
     public MyLinkedList mergeLinkedListSort(MyLinkedList head) {
@@ -100,7 +188,7 @@ public class Lesson8Assignment {
         int[] input2 = {98, 7654, 2, 3456, 66};
         result = sorter.inPlaceMergeSort(input2);
         if (!isSame(expected, result)) {
-            throw new RuntimeException("Array was not iteratively sorted properly: " + result);
+            throw new RuntimeException("Array was not in-place sorted properly: " + result);
         }
 
         MyLinkedList linkedInput = new MyLinkedList();
