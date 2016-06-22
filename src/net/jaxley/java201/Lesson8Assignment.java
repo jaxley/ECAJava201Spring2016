@@ -1,5 +1,8 @@
-package com.skoohgoli.java201;
+package net.jaxley.java201;
 
+
+import com.skoohgoli.java201.MyLinkedList;
+import com.skoohgoli.java201.Node;
 
 import java.util.Arrays;
 
